@@ -18,15 +18,35 @@ def main(input):
              "C Y": win_point["loss"],
              "C Z": win_point["draw"],}
 
+    outcome_map={
+        "win": {"A": "Y",
+                "B": "Z",
+                "C": "X"},
+        "draw": {"A": "X",
+                "B": "Y",
+                "C": "Z"},
+        "loss": {"A": "Z",
+                "B": "X",
+                "C": "Y"}
+    }
+
     score = 0
+    part_2_score = 0
     for line in lines:
         temp_case = line[0:3]
         temp_shape = line[2:3]
-        #print(f"[DEBUG] outcome: {cases[temp_case]}")
-        #print(f"[DEBUG] shape: {shape_point[temp_shape]}")
+        temp_opponent_shape = line[0:1]
         score = score + cases[temp_case] + shape_point[temp_shape]
+        #Check if win/loose/draw
+        if temp_shape == "X":
+            part_2_score = part_2_score + 0 + shape_point[outcome_map["loss"][temp_opponent_shape]]
+        if temp_shape == "Y":
+            part_2_score = part_2_score + 3 + shape_point[outcome_map["draw"][temp_opponent_shape]]
+        if temp_shape == "Z":
+            part_2_score = part_2_score + 6 + shape_point[outcome_map["win"][temp_opponent_shape]]
 
     print(f"[DEBUG] total score: {score}")
+    print(f"[DEBUG] total part 2 score: {part_2_score}")
 
 if __name__ == "__main__":
     main(sys.argv[1])
