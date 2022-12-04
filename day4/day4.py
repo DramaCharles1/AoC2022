@@ -32,5 +32,18 @@ def main(input):
             same_sections = same_sections + 1
     print(same_sections)
 
+    #if 1st elf's last section is bigger or equal to 2nd elf's first section
+    same_sections = 0
+    for line in lines:
+        elf_pair = line.split(sep[0])
+        _1st_elf_sections = sections_dics(elf_pair[0].split(sep[1])[0], elf_pair[0].split(sep[1])[1])
+        _2nd_elf_sections = sections_dics(elf_pair[1].split(sep[1])[0], elf_pair[1].split(sep[1])[1])
+        if _1st_elf_sections["last_section"] >= _2nd_elf_sections["first_section"]:
+            print("---------------------")
+            print(f"[DEBUG] 1st elf sections: {_1st_elf_sections}")
+            print(f"[DEBUG] 2nd elf sections: {_2nd_elf_sections}")
+            same_sections = same_sections + 1
+    print(same_sections)
+
 if __name__ == "__main__":
     main(sys.argv[1])
