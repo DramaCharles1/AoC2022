@@ -1018,3 +1018,5 @@ $ cd ..
 $ cd tjtccqtm
 $ ls
 232421 vngq
+end
+bye
