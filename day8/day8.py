@@ -20,6 +20,9 @@ def main(input):
     lines = []
     with open(input) as file:
         lines = file.readlines()
+    
+    for line in lines:
+        line = line.strip()
 
     horizontal_edges = len(lines[0]) - 1
     vertical_edges = len(lines)
@@ -35,16 +38,25 @@ def main(input):
     right = []
     up = []
     down = []
-
+    visable_trees = 0
+    print(f"line len {len(lines[0])}")
     print("------------")
     for y in range(0, len(lines)):
-        for x in range(0, len(lines[0])):
-            #print(lines[y][x])
-            #current_tree_height = lines[y][x]
-            #left = lines[y][:x]
-            #print(left)
-            pass
+        for x in range(0, len(lines[0]) - 1):
+            current_tree_height = lines[y][x]
+            print(f"current tree coord: {x},{y}")
+            if x == 0 or y == 0 or x == len(lines[0]) - 2 or y == len(lines) - 1: #check if on a vertical edge
+                print(f"[DEBUG] current tree is on an edge: {current_tree_height}")
+                visable_trees += 1
+            else:
+                print(f"[DEBUG] current tree: {current_tree_height}")
+                #get left, right, up, down
+                left = lines[y][:x]
+                right = lines[y][x:len(lines[0]) - 1]
+                print(f"[DEBUG] left: {left}")
+                print(f"[DEBUG] right: {right}")
         print("------------")
+    print(f"[DEBUG] visable trees: {visable_trees}")
 
     print(check_if_tree_is_higher(5,[2],[5,1,2],[0],[5,3,3]))
 
