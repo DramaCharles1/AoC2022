@@ -21,8 +21,40 @@ def main(input):
     with open(input) as file:
         lines = file.readlines()
     
+    rows = []
+    cols = []
+    
+    #123
+    #345
+    #678
+    
     for line in lines:
         line = line.strip()
+        rows.append(line)
+    
+    cols2 = [""] * len(rows[0])
+    test = ""
+    test += "1"
+    
+    print("------------")
+    for row in rows:
+        print(row)
+        for x in range(0, len(row)):
+            try:
+                cols[x] += row[x]
+                #cols[x].append(row[x])
+            except IndexError as list_error:
+                cols.append("")
+                cols[x] += row[x]
+                #cols[x].append(row[x])
+                
+    #print(cols2)
+                
+    
+    print("------------")
+    for col in cols:
+        print(col)
+    
 
     horizontal_edges = len(lines[0]) - 1
     vertical_edges = len(lines)
@@ -51,10 +83,18 @@ def main(input):
             else:
                 print(f"[DEBUG] current tree: {current_tree_height}")
                 #get left, right, up, down
-                left = lines[y][:x]
-                right = lines[y][x:len(lines[0]) - 1]
+                #left = lines[y][:x]
+                #right = lines[y][x:len(lines[0]) - 1]
+                left = rows[y][:x]
+                right = rows[y][x+1:]
+                up = cols[x][:y]
+                down = cols[x][y+1:]
                 print(f"[DEBUG] left: {left}")
                 print(f"[DEBUG] right: {right}")
+                print(f"[DEBUG] up: {up}")
+                print(f"[DEBUG] down: {down}")
+                if check_if_tree_is_higher(current_tree_height, left, right, down, up):
+                    visable_trees += 1
         print("------------")
     print(f"[DEBUG] visable trees: {visable_trees}")
 
