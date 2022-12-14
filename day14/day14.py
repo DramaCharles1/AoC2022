@@ -1,7 +1,9 @@
 import sys
+import time
 
 def main(input):
     print("Start")
+    start = time.time()
     #Create map with size (smallest_x,0) to (biggest_x,biggest_y). Fill everything with air (.)
     #Fill in all rock formations on map by putting all rock coords into list. Fill in as (#)
     #Fill in sand coord on map (0,500). Fill in as (+)
@@ -42,8 +44,57 @@ def main(input):
     for rock in rock_coords:
         smallest_x, biggest_x, biggest_y = find_smallest_and_biggest_rock_coord_from_all_rocks(rock, smallest_x, biggest_x, biggest_y)
     print(f"[DEBUG] Map corners: {smallest_x, 0}, {biggest_x, 0}, {0, biggest_y}, {biggest_x, biggest_y}")
-    sand_fill = 0
 
+    sand_coords = []
+    rock_and_sand_coords = []
+    rock_and_sand_coords.extend(rock_coords)
+    for i in range(0,832):
+        print(i)
+        #rock_and_sand_coords.extend(sand_coords)
+        add_sand = fill_sand("500,0", rock_and_sand_coords)
+        #print(f"sand to add: {add_sand}")
+        #print(f"sand coords: {sand_coords}")
+        #print(len(rock_and_sand_coords))
+        if add_sand == None:
+            break
+        sand_coords.append(add_sand)
+        rock_and_sand_coords.append(add_sand)
+
+    map = []
+    for y in range(0, biggest_y + 1):
+        map_line = []
+        for x in range(smallest_x, biggest_x + 1):
+            coord = f"{x},{y}"
+            if coord in rock_coords:
+                map_line.append("#")
+            elif coord in "500,0":
+                map_line.append("+")
+            elif coord in sand_coords:
+                map_line.append("O")
+            else:
+                map_line.append(".")
+        print(map_line)
+        map.append(map_line)
+    print(len(sand_coords))
+    print(f"elapsed time: {time.time() - start}s")
+
+def fill_sand(start_coord: str, rock_and_sand_coords: list):
+    coord_to_check = start_coord
+    #count = 0
+    while True:
+        #print(coord_to_check)
+        #print(count)
+        if f"{int(coord_to_check.split(sep[1])[0])},{int(coord_to_check.split(sep[1])[1]) + 1}" not in rock_and_sand_coords:
+            #print("im here 1")
+            coord_to_check = f"{int(coord_to_check.split(sep[1])[0])},{int(coord_to_check.split(sep[1])[1]) + 1}"
+        elif f"{int(coord_to_check.split(sep[1])[0]) - 1},{int(coord_to_check.split(sep[1])[1]) + 1}" not in rock_and_sand_coords:
+            #print("im here 2")
+            coord_to_check = f"{int(coord_to_check.split(sep[1])[0]) - 1},{int(coord_to_check.split(sep[1])[1]) + 1}" 
+        elif f"{int(coord_to_check.split(sep[1])[0]) + 1},{int(coord_to_check.split(sep[1])[1]) + 1}" not in rock_and_sand_coords:
+            #print("im here 3")
+            coord_to_check = f"{int(coord_to_check.split(sep[1])[0]) + 1},{int(coord_to_check.split(sep[1])[1]) + 1}"
+        else:
+            return coord_to_check
 
 def find_smallest_and_biggest_rock_coord_from_all_rocks(rock: str, old_smallest_x, old_biggest_x, old_biggest_y):
     x = int(rock.split(sep[1])[0])
