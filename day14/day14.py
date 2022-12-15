@@ -105,7 +105,8 @@ def main(input):
         if add_sand == None or add_sand == start_coord:
             break
         sand_coords.append(add_sand)
-        rock_and_sand_coords.append(add_sand)
+        #rock_and_sand_coords.append(add_sand)
+        rock_and_sand_coords.insert(0,add_sand)
 
     #map = []
     #for y in range(0, biggest_y + 1):
