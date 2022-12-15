@@ -31,8 +31,8 @@ def main(input):
             rock = rock.strip()
             if not rock in rock_coords:
                 rock_coords.append(rock)
-    print(rock_coords)
-    print(len(rock_coords))
+    #print(rock_coords)
+    #print(len(rock_coords))
     old_smallest_x = int(rock_coords[0].split(",")[0])
     old_biggest_x = old_smallest_x
     old_biggest_y = int(rock_coords[0].split(",")[1])
@@ -45,52 +45,108 @@ def main(input):
         smallest_x, biggest_x, biggest_y = find_smallest_and_biggest_rock_coord_from_all_rocks(rock, smallest_x, biggest_x, biggest_y)
     print(f"[DEBUG] Map corners: {smallest_x, 0}, {biggest_x, 0}, {0, biggest_y}, {biggest_x, biggest_y}")
 
-    sand_coords = []
-    rock_and_sand_coords = []
-    rock_and_sand_coords.extend(rock_coords)
-    for i in range(0,832):
-        print(i)
-        #rock_and_sand_coords.extend(sand_coords)
-        add_sand = fill_sand("500,0", rock_and_sand_coords)
+    #sand_coords = []
+    #rock_and_sand_coords = []
+    #rock_and_sand_coords.extend(rock_coords)
+    #for i in range(0,832):
+    #    print(i)
+    #    #rock_and_sand_coords.extend(sand_coords)
+    #    add_sand = fill_sand("500,0", rock_and_sand_coords)
         #print(f"sand to add: {add_sand}")
         #print(f"sand coords: {sand_coords}")
         #print(len(rock_and_sand_coords))
-        if add_sand == None:
+    #    if add_sand == None:
+    #        break
+    #    sand_coords.append(add_sand)
+    #    rock_and_sand_coords.append(add_sand)
+
+    #map = []
+    #for y in range(0, biggest_y + 1):
+    #    map_line = []
+    #    for x in range(smallest_x, biggest_x + 1):
+    #        coord = f"{x},{y}"
+    #        if coord in rock_coords:
+    #            map_line.append("#")
+    #        elif coord in "500,0":
+    #            map_line.append("+")
+    #        elif coord in sand_coords:
+    #            map_line.append("O")
+    #        else:
+    #            map_line.append(".")
+        #print(map_line)
+    #    map.append(map_line)
+    #print(len(sand_coords))
+
+    print("Start part 2")
+    etc = 400
+    smallest_x = smallest_x - etc
+    biggest_x = biggest_x + etc
+    biggest_y = biggest_y + 2
+    print(f"[DEBUG] Map corners: {smallest_x, 0}, {biggest_x, 0}, {0, biggest_y}, {biggest_x, biggest_y}")
+    floor = []
+    for i in range(smallest_x, biggest_x + 1):
+        floor_coord = f"{i},{biggest_y}"
+        floor.append(floor_coord)
+    #print(floor)
+    print(len(floor))
+    rock_coords.extend(floor)
+
+    sand_coords = []
+    rock_and_sand_coords = []
+    rock_and_sand_coords.extend(rock_coords)
+    start_coord = "500,0"
+    for i in range(0,100000):
+        print(i)
+        #rock_and_sand_coords.extend(sand_coords)
+        add_sand = fill_sand(start_coord, rock_and_sand_coords, biggest_y)
+        #print(f"sand to add: {add_sand}")
+        #print(f"sand coords: {sand_coords}")
+        #print(len(rock_and_sand_coords))
+        if add_sand == None or add_sand == start_coord:
             break
         sand_coords.append(add_sand)
         rock_and_sand_coords.append(add_sand)
 
-    map = []
-    for y in range(0, biggest_y + 1):
-        map_line = []
-        for x in range(smallest_x, biggest_x + 1):
-            coord = f"{x},{y}"
-            if coord in rock_coords:
-                map_line.append("#")
-            elif coord in "500,0":
-                map_line.append("+")
-            elif coord in sand_coords:
-                map_line.append("O")
-            else:
-                map_line.append(".")
-        print(map_line)
-        map.append(map_line)
+    #map = []
+    #for y in range(0, biggest_y + 1):
+    #    map_line = []
+    #    for x in range(smallest_x, biggest_x + 1):
+    #        coord = f"{x},{y}"
+    #        if coord in rock_coords:
+    #            map_line.append("#")
+    #        elif coord in start_coord:
+    #            map_line.append("+")
+    #        elif coord in sand_coords:
+    #            map_line.append("O")
+    #        else:
+    #            map_line.append(".")
+        #print(map_line)
+        #map.append(map_line)
     print(len(sand_coords))
-    print(f"elapsed time: {time.time() - start}s")
+    #print(sand_coords)
 
-def fill_sand(start_coord: str, rock_and_sand_coords: list):
+    print(f"elapsed time: {time.time() - start}s")
+def fill_sand(start_coord: str, rock_and_sand_coords: list, floor_height: int):
     coord_to_check = start_coord
-    #count = 0
+    count = 0
+    stop_flag = False
     while True:
         #print(coord_to_check)
         #print(count)
-        if f"{int(coord_to_check.split(sep[1])[0])},{int(coord_to_check.split(sep[1])[1]) + 1}" not in rock_and_sand_coords:
+        #if floor_height > 100:
+        #    stop_flag = True
+        #    print(f"[DEBUG] STOP: {coord_to_check}")
+        #    return None
+        if int(coord_to_check.split(sep[1])[1]) == floor_height:
+            return coord_to_check
+        elif f"{int(coord_to_check.split(sep[1])[0])},{int(coord_to_check.split(sep[1])[1]) + 1}" not in rock_and_sand_coords:
             #print("im here 1")
             coord_to_check = f"{int(coord_to_check.split(sep[1])[0])},{int(coord_to_check.split(sep[1])[1]) + 1}"
-        elif f"{int(coord_to_check.split(sep[1])[0]) - 1},{int(coord_to_check.split(sep[1])[1]) + 1}" not in rock_and_sand_coords:
+            count += 1
+        elif f"{int(coord_to_check.split(sep[1])[0]) - 1},{int(coord_to_check.split(sep[1])[1]) + 1}" not in rock_and_sand_coords or stop_flag:
             #print("im here 2")
             coord_to_check = f"{int(coord_to_check.split(sep[1])[0]) - 1},{int(coord_to_check.split(sep[1])[1]) + 1}" 
-        elif f"{int(coord_to_check.split(sep[1])[0]) + 1},{int(coord_to_check.split(sep[1])[1]) + 1}" not in rock_and_sand_coords:
+        elif f"{int(coord_to_check.split(sep[1])[0]) + 1},{int(coord_to_check.split(sep[1])[1]) + 1}" not in rock_and_sand_coords or stop_flag:
             #print("im here 3")
             coord_to_check = f"{int(coord_to_check.split(sep[1])[0]) + 1},{int(coord_to_check.split(sep[1])[1]) + 1}"
         else:
@@ -118,7 +174,7 @@ def find_smallest_and_biggest_rock_coord_from_all_rocks(rock: str, old_smallest_
 
 def rock_formation_to_coords(formation: str):
     rocks = formation.split(sep[2])
-    print(f"rocks: {rocks}")
+    #print(f"rocks: {rocks}")
     rocks_to_add = []
     for i in range(0,len(rocks)):
         current_rock = rocks[i]
@@ -156,7 +212,7 @@ def rock_formation_to_coords(formation: str):
                     temp_rock = f"{current_rock_x},{current_rock_y-j}"
                     #print(f"rock to add in negative y direction: {temp_rock}")
                     rocks_to_add.append(temp_rock)
-    print(f"rocks to add: {rocks_to_add}")
+    #print(f"rocks to add: {rocks_to_add}")
     return rocks_to_add
 
 if __name__ == "__main__":
