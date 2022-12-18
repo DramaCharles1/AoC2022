@@ -3,6 +3,7 @@ from typing import Any, List, Dict
 import re
 import random
 import string
+import pdb
 
 def new_directory(directory_name, parrent_directory, file_size, sub_directories: List[str], files: List[str]):
     directory = {"directory_name": directory_name,
@@ -36,56 +37,73 @@ def main(input):
     files = []
     list_directory = False
     directory_id = ""
+    current_path = ""
     for line in lines:
         line = line.strip()
         #print(f"line: {line}")
         if "$ cd .." in line:
             if list_directory:
-                directory_id = id_generator()
-                print(f"Add new directory: {directory_id}")
-                print(f"New directory {directory_id} directory name {current_directory}")
-                print(f"New directory {directory_id} parrent directory {parrent_directory}")
-                print(f"New directory {directory_id} total size: {current_directory_size}")
-                print(f"New directory {directory_id} subdirectories: {subdirectories}")
-                print(f"New directory {directory_id} files: {files}")
-                all_directories2[directory_id] = new_directory(current_directory, parrent_directory, current_directory_size, subdirectories, files)
-                all_directories3.append(new_directory(current_directory, parrent_directory, current_directory_size, subdirectories, files))
+                print(f"Add new directory: {current_path}")
+                print(f"New directory {current_path} directory name {current_directory}")
+                print(f"New directory {current_path} parrent directory {parrent_directory}")
+                print(f"New directory {current_path} total size: {current_directory_size}")
+                print(f"New directory {current_path} subdirectories: {subdirectories}")
+                print(f"New directory {current_path} files: {files}")
+                all_directories2[current_path] = new_directory(current_path, parrent_directory, current_directory_size, subdirectories, files)
+                all_directories3.append(new_directory(current_path, parrent_directory, current_directory_size, subdirectories, files))
                 subdirectories = []
                 files = []
                 current_directory_size = 0
-            current_directory = ""
+            if current_path == "/":
+                pass
+            else:
+                current_path_list = current_path.split("/")
+                current_path_list = current_path_list[0:len(current_path_list) - 2]
+                print(current_path_list)
+                current_path = ""
+                for path in current_path_list:
+                    print(f"path build: {path}")
+                    #current_directory += f"/{path}"
+                    current_path += f"{path}/"
+            print(f"Current path: {current_path}")
             list_directory = False
         elif "$ cd" in line:
             if list_directory:
-                directory_id = id_generator()
-                print(f"Add new directory: {directory_id}")
-                print(f"New directory {directory_id} directory name {current_directory}")
-                print(f"New directory {directory_id} parrent directory {parrent_directory}")
-                print(f"New directory {directory_id} total size: {current_directory_size}")
-                print(f"New directory {directory_id} subdirectories: {subdirectories}")
-                print(f"New directory {directory_id} files: {files}")
-                all_directories2[directory_id] = new_directory(current_directory, parrent_directory, current_directory_size, subdirectories, files)
-                all_directories3.append(new_directory(current_directory, parrent_directory, current_directory_size, subdirectories, files))
+                print(f"Add new directory: {current_path}")
+                print(f"New directory {current_path} directory name {current_directory}")
+                print(f"New directory {current_path} parrent directory {parrent_directory}")
+                print(f"New directory {current_path} total size: {current_directory_size}")
+                print(f"New directory {current_path} subdirectories: {subdirectories}")
+                print(f"New directory {current_path} files: {files}")
+                all_directories2[current_path] = new_directory(current_path, parrent_directory, current_directory_size, subdirectories, files)
+                all_directories3.append(new_directory(current_path, parrent_directory, current_directory_size, subdirectories, files))
                 subdirectories = []
                 files = []
                 current_directory_size = 0
+            if "$ cd /" in line:
+                current_path = "/"
+            else:
+                #curren_directory = e
+                #/asd
+                current_directory = line.split(" ")[-1]
+                #current_directory = current_path.split("/")[-1]
+                current_path += f"{current_directory}/"
             parrent_directory = current_directory
-            current_directory = line.split(" ")[2]
             print(f"current directory: {current_directory}")
+            print(f"current path: {current_path}")
             list_directory = False
         elif "$ ls" in line:
             list_directory = True
         elif "end" in line:
             if list_directory:
-                directory_id = id_generator()
-                print(f"Add new directory: {directory_id}")
-                print(f"New directory {directory_id} directory name {current_directory}")
-                print(f"New directory {directory_id} parrent directory {parrent_directory}")
-                print(f"New directory {directory_id} total size: {current_directory_size}")
-                print(f"New directory {directory_id} subdirectories: {subdirectories}")
-                print(f"New directory {directory_id} files: {files}")
-                all_directories2[directory_id] = new_directory(current_directory, parrent_directory, current_directory_size, subdirectories, files)
-                all_directories3.append(new_directory(current_directory, parrent_directory, current_directory_size, subdirectories, files))
+                print(f"Add new directory: {current_path}")
+                print(f"New directory {current_path} directory name {current_directory}")
+                print(f"New directory {current_path} parrent directory {parrent_directory}")
+                print(f"New directory {current_path} total size: {current_directory_size}")
+                print(f"New directory {current_path} subdirectories: {subdirectories}")
+                print(f"New directory {current_path} files: {files}")
+                all_directories2[current_path] = new_directory(current_path, parrent_directory, current_directory_size, subdirectories, files)
+                all_directories3.append(new_directory(current_path, parrent_directory, current_directory_size, subdirectories, files))
                 subdirectories = []
                 files = []
                 current_directory_size = 0
@@ -97,6 +115,7 @@ def main(input):
                 files.append(file[1])
             elif "dir":
                 subdirectory = line.split(" ")[1]
+                subdirectory = f"{current_path}{subdirectory}/"
                 subdirectories.append(subdirectory)
         previous_line = line
     print("--------------------------------------------------")
@@ -113,9 +132,12 @@ def main(input):
     size_less_than_100k = 0
     for directory in all_directories2.keys():
         size = search_helper2(directory, all_directories2)
+        if size <= 100000:
+            size_less_than_100k += size
         all_directories2[directory]["total_size"] = size
         print(f"Directory {all_directories2[directory]['directory_name']} total size: {all_directories2[directory]['file_size']}")
     print("--------------------------------------------------")
+    print(f"Result part 1: {size_less_than_100k}")
     #print(f"Amount of directories: {len(all_directories2)}")
     #print("--------------------------------------------------")
     #for directory in all_directories2.keys():
