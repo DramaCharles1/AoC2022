@@ -138,74 +138,37 @@ def main(input):
         print(f"Directory {all_directories2[directory]['directory_name']} total size: {all_directories2[directory]['file_size']}")
     print("--------------------------------------------------")
     print(f"Result part 1: {size_less_than_100k}")
-    #print(f"Amount of directories: {len(all_directories2)}")
-    #print("--------------------------------------------------")
-    #for directory in all_directories2.keys():
-    #    print(f"Directory: {all_directories2[directory]['directory_name']}")
-    #    print(f"Parrent directory: {all_directories2[directory]['parrent_directory']}")
-    #    print(f"Directory size: {all_directories2[directory]['file_size']}")
-    #    print(f"Directory subdirectories: {all_directories2[directory]['sub_directories']}")
-    #    print(f"Directory files: {all_directories2[directory]['files']}")
-    #    print("--------------------")
-    #print("--------------------------------------------------")
-    #size_less_than_100k = 0
-    #for directory in all_directories2:
-    #    size = search_helper2(directory, all_directories2)
-    #    all_directories2[directory]["total_size"] = size
-    #    print(f"Directory {all_directories2[directory]['directory_name']} total size: {all_directories2[directory]['file_size']}")
-    #print("--------------------------------------------------")
-
-    #global all_directories
-    #all_directories = {}
-    #directories = []
-    #new_dir = False
-    #new_directory_name = ""
-    #new_dir_files = []
-    #new_dir_size = 0
-    #previous_line = "$ cd /"
-    #sub_directories = []
-    #for line in lines:
-    #    line = line.strip()
-    #    if "end" in line:
-    #        new_dir = False
-    #    elif "$ ls" in line and "$ cd" in previous_line:
-    #        new_dir = True
-    #        new_directory_name = previous_line[5:]
-    #        #print(f"[DEBUG] New directory: {new_directory_name}")
-    #    elif new_dir and not "$ cd" in line:
-    #        #print(f"[DEBUG] New file in directory {new_directory_name}: {line.strip()}")
-    #        if len(re.findall(r'\d+', line)) > 0:
-    #            #print(re.findall(r'\d+', line))
-    #            new_dir_size += int(re.findall(r'\d+', line)[0])
-    #        elif "dir" in line:
-    #            sub_directories.append(line[4:len(line) - 1])
-    #        else:
-    #            raise Exception("something went wrong")
-    #    elif "cd .." in line:
-    #        pass
-    #    else:
-    #        #print(f"[DEBUG] Directory {new_directory_name} has a total size: {new_dir_size}")
-    #        if new_directory_name not in all_directories.keys():
-    #            all_directories[new_directory_name] = new_directory(new_directory_name, new_dir_size, sub_directories)
-    #        sub_directories = []
-    #        new_dir = False
-    #        new_dir_size = 0
-    #    previous_line = line
-    ##print(f"Amount of directories: {len(all_directories)}")
-    ##debug = "tjtccqtm"
-    ##print(f"[DEBUG] directory {debug} has a total size of: {search_helper(debug)}")
-    ##debug = "/"
-    ##print(f"[DEBUG] directory {debug} has a total size of: {search_helper(debug)}")
-    #size_less_than_100k = 0
-    #for directory in all_directories:
-    #    if directory != "":
-    #        size = search_helper(directory)
-    #        all_directories[directory]["total_size"] = size
-    #        if size <= 100000:
-    #            #print(f"[DEBUG] directory {directory} has a total size of: {size}")
-    #            #print(f"[DEBUG] directory {directory} has a total size less than 100000")
-    #            size_less_than_100k += size
-    #print(f"result: {size_less_than_100k}")
+    size_used = all_directories2["/"]["total_size"] 
+    total_size = 70000000
+    print(f"Total size: {total_size}")
+    print(f"Size used: {size_used}")
+    print(f"Size needed for update: {30000000}")
+    size_needed = size_used - 30000000
+    print(f"Size needed: {size_needed}")
+    delta = 0
+    old_delta = 70000000
+    found_directory = {}
+    print("--------------------------------------------------")
+    for dir in all_directories2:
+        print(dir)
+        print(all_directories2[dir]["total_size"])
+        if all_directories2[dir]["total_size"] >= size_needed:
+            print("yes")
+    print("--------------------------------------------------")
+    for directory in all_directories2:
+        #print(f"directory {directory} total size: {all_directories2[directory]['total_size']}")
+        if all_directories2[directory]["total_size"] >= size_needed:
+            print(f"potential dir to delete found: {found_directory} with total size {all_directories2[directory]['total_size']}")
+            delta = all_directories2[directory]["total_size"] - size_needed
+            if delta < 0:
+                raise Exception("something went wrong")
+            if delta < old_delta:
+                found_directory = directory
+                old_delta = delta
+                print(f"new dir to delete found: {found_directory} with total size {all_directories2[directory]['total_size']}")
+    print(old_delta)
+    for key in all_directories2[found_directory].keys():
+        print(f"{key}: {all_directories2[found_directory][key]}")
 
 def search_helper2(search_directory, all_directories: Dict):
     temp_directory = all_directories[search_directory]
